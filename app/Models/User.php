@@ -22,6 +22,11 @@ class User extends Authenticatable
 
     public const ROLE_ADMIN = 'admin';
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'role' => self::ROLE_MEMBER,
+    ];
+
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;

@@ -80,8 +80,8 @@ class PostRepository implements PostRepositoryInterface
         $row = Post::query()
             ->where('user_id', $userId)
             ->selectRaw('count(*) as total')
-            ->selectRaw('count(*) filter (where is_published = true) as published')
-            ->selectRaw('count(*) filter (where is_published = false) as draft')
+            ->selectRaw('coalesce(sum(case when is_published then 1 else 0 end), 0) as published')
+            ->selectRaw('coalesce(sum(case when is_published then 0 else 1 end), 0) as draft')
             ->first();
 
         return [
