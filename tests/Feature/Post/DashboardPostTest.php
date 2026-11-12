@@ -150,7 +150,7 @@ class DashboardPostTest extends TestCase
         $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('a.png')]);
         $first = $post->refresh()->cover_image_path;
 
-        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('b.webp')]);
+        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('b.jpg')]);
         $second = $post->refresh()->cover_image_path;
 
         Storage::disk('public')->assertMissing($first);
