@@ -6,11 +6,19 @@ use App\Features\Ai\Contracts\AiClientInterface;
 use App\Features\Ai\DTO\GeneratedPostItem;
 use App\Features\Post\Enums\PostCategory;
 use OpenAI;
+use OpenAI\Contracts\ClientContract;
 use RuntimeException;
 use Throwable;
 
 class OpenAiPostGeneratorService implements AiClientInterface
 {
+    /**
+     * $client opsional: jika diisi (mis. pada test), dipakai sebagai pengganti klien OpenAI sungguhan.
+     */
+    public function __construct(
+        private readonly ?ClientContract $client = null,
+    ) {}
+
     public function generate(int $count): array
     {
         $apiKey = (string) config('services.openai.key');
@@ -20,7 +28,9 @@ class OpenAiPostGeneratorService implements AiClientInterface
         }
 
         try {
-            $response = OpenAI::client($apiKey)->chat()->create([
+            $client = $this->client ?? OpenAI::client($apiKey);
+
+            $response = $client->chat()->create([
                 'model' => config('services.openai.model', 'gpt-4o-mini'),
                 'response_format' => ['type' => 'json_object'],
                 'messages' => [

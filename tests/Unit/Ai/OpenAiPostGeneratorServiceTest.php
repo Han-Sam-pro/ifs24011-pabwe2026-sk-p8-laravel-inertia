@@ -3,11 +3,53 @@
 namespace Tests\Unit\Ai;
 
 use App\Features\Ai\Services\OpenAiPostGeneratorService;
+use Mockery;
+use OpenAI\Contracts\ClientContract;
+use OpenAI\Contracts\Resources\ChatContract;
 use RuntimeException;
 use Tests\TestCase;
 
 class OpenAiPostGeneratorServiceTest extends TestCase
 {
+    public function test_generate_sends_prompt_and_parses_openai_response(): void
+    {
+        config(['services.openai.key' => 'sk-test']);
+
+        $json = json_encode(['articles' => [
+            ['title' => 'Satu', 'category' => 'Teknologi', 'excerpt' => 'x', 'content' => 'Isi satu'],
+        ]]);
+
+        $chat = Mockery::mock(ChatContract::class);
+        $chat->shouldReceive('create')
+            ->once()
+            ->with(Mockery::on(fn (array $params) => str_contains($params['messages'][1]['content'], 'Buat 2 draf')))
+            ->andReturn((object) ['choices' => [(object) ['message' => (object) ['content' => $json]]]]);
+
+        $client = Mockery::mock(ClientContract::class);
+        $client->shouldReceive('chat')->once()->andReturn($chat);
+
+        $items = (new OpenAiPostGeneratorService($client))->generate(2);
+
+        $this->assertCount(1, $items);
+        $this->assertSame('Teknologi', $items[0]->category);
+    }
+
+    public function test_generate_wraps_provider_errors(): void
+    {
+        config(['services.openai.key' => 'sk-test']);
+
+        $chat = Mockery::mock(ChatContract::class);
+        $chat->shouldReceive('create')->once()->andThrow(new RuntimeException('koneksi putus'));
+
+        $client = Mockery::mock(ClientContract::class);
+        $client->shouldReceive('chat')->once()->andReturn($chat);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Permintaan ke layanan AI gagal: koneksi putus');
+
+        (new OpenAiPostGeneratorService($client))->generate(1);
+    }
+
     public function test_parse_maps_articles_and_respects_count(): void
     {
         $json = json_encode(['articles' => [

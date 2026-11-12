@@ -35,6 +35,19 @@ class PostExcelTest extends TestCase
         $this->assertStringContainsString('.xlsx', $response->headers->get('content-disposition'));
     }
 
+    public function test_export_streams_xlsx_content(): void
+    {
+        Post::factory()->for($this->author)->create(['title' => 'Untuk Diekspor']);
+
+        $response = $this->actingAs($this->author)->get('/dashboard/posts/export');
+
+        ob_start();
+        $response->baseResponse->sendContent();
+        $content = ob_get_clean();
+
+        $this->assertStringStartsWith('PK', $content); // berkas xlsx adalah arsip zip
+    }
+
     public function test_import_saves_valid_rows_and_reports_invalid_ones(): void
     {
         $file = $this->makeXlsx([

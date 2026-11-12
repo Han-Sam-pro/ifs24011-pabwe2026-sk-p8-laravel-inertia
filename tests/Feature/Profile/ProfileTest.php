@@ -33,6 +33,17 @@ class ProfileTest extends TestCase
         $this->assertTrue(Hash::check('passwordbaru', $user->password));
     }
 
+    public function test_profile_page_shows_current_data(): void
+    {
+        $user = User::factory()->create(['username' => 'profilku']);
+
+        $this->actingAs($user)->get('/profile')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Profile/Edit')
+                ->where('profile.username', 'profilku'));
+    }
+
     public function test_profile_keeps_password_when_left_blank(): void
     {
         $user = User::factory()->create(['password' => 'tetap123']);
