@@ -11,7 +11,7 @@ Blog dengan tiga tingkat akses: **Publik**, **Anggota (penulis)**, dan **Admin**
 ## Persyaratan
 
 - PHP 8.4+ (lihat catatan di bawah), Composer, Node.js 20+ dan npm
-- PostgreSQL 14+
+- MySQL 8.0+ (atau MariaDB 10.6+)
 
 ## Instalasi
 
@@ -24,7 +24,7 @@ php artisan key:generate
 Buat database:
 
 ```bash
-psql -U postgres -c "CREATE DATABASE pabwe_p8_blog;"
+mysql -u root -p -e "CREATE DATABASE pabwe_p8_blog CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
 Sesuaikan `.env` (`DB_*`) dan isi `OPENAI_API_KEY` jika ingin memakai fitur AI.
@@ -69,7 +69,7 @@ php artisan test --coverage --min=100   # butuh driver Xdebug atau PCOV
 composer audit
 ```
 
-Test memakai SQLite in-memory (lihat `phpunit.xml`), sehingga tidak menyentuh database PostgreSQL.
+Test memakai SQLite in-memory (lihat `phpunit.xml`), sehingga tidak menyentuh database MySQL.
 
 ## Struktur (feature-first)
 
