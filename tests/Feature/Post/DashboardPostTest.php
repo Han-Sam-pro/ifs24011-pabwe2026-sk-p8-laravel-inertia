@@ -135,7 +135,7 @@ class DashboardPostTest extends TestCase
         $post->refresh();
         Storage::disk('public')->assertExists($post->cover_image_path);
 
-        $this->delete("/dashboard/posts/{$post->id}")->assertRedirect(route('posts.index'));
+        $this->delete("/dashboard/posts/{$post->id}")->assertRedirect(route('dashboard.posts.index'));
 
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
         Storage::disk('public')->assertMissing($post->cover_image_path);

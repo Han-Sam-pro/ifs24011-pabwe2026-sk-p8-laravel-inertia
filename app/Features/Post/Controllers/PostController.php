@@ -56,7 +56,7 @@ class PostController extends Controller
     {
         $this->posts->delete($post);
 
-        return redirect()->route('posts.index')->with('success', 'Artikel berhasil dihapus.');
+        return redirect()->route('dashboard.posts.index')->with('success', 'Artikel berhasil dihapus.');
     }
 
     public function togglePublish(Post $post): RedirectResponse
