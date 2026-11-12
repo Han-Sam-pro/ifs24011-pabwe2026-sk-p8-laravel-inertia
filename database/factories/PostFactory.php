@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
  */
 class PostFactory extends Factory
 {
+    protected $model = Post::class;
+
     /**
      * @return array<string, mixed>
      */

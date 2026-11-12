@@ -255,9 +255,13 @@ pipeline {
             post {
                 always {
                     archiveArtifacts(
-                        artifacts: 'coverage.txt,coverage.xml',
+                        artifacts: 'coverage.txt,coverage.xml,storage/logs/laravel.log',
                         allowEmptyArchive: true
                     )
+                    sh '''
+                        echo "=== Tail storage/logs/laravel.log (jika ada) ==="
+                        tail -n 200 storage/logs/laravel.log 2>/dev/null || echo "(tidak ada log)"
+                    '''
                 }
             }
         }
