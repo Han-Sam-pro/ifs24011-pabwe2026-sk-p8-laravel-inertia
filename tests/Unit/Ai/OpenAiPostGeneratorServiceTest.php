@@ -6,6 +6,8 @@ use App\Features\Ai\Services\OpenAiPostGeneratorService;
 use Mockery;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Contracts\Resources\ChatContract;
+use OpenAI\Responses\Chat\CreateResponse;
+use OpenAI\Responses\Meta\MetaInformation;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -23,7 +25,7 @@ class OpenAiPostGeneratorServiceTest extends TestCase
         $chat->shouldReceive('create')
             ->once()
             ->with(Mockery::on(fn (array $params) => str_contains($params['messages'][1]['content'], 'Buat 2 draf')))
-            ->andReturn((object) ['choices' => [(object) ['message' => (object) ['content' => $json]]]]);
+            ->andReturn($this->chatResponse($json));
 
         $client = Mockery::mock(ClientContract::class);
         $client->shouldReceive('chat')->once()->andReturn($chat);
@@ -48,6 +50,23 @@ class OpenAiPostGeneratorServiceTest extends TestCase
         $this->expectExceptionMessage('Permintaan ke layanan AI gagal: koneksi putus');
 
         (new OpenAiPostGeneratorService($client))->generate(1);
+    }
+
+    private function chatResponse(string $content): CreateResponse
+    {
+        return CreateResponse::from([
+            'id' => 'chatcmpl-test',
+            'object' => 'chat.completion',
+            'created' => 1,
+            'model' => 'gpt-4o-mini',
+            'choices' => [[
+                'index' => 0,
+                'message' => ['role' => 'assistant', 'content' => $content],
+                'logprobs' => null,
+                'finish_reason' => 'stop',
+            ]],
+            'usage' => ['prompt_tokens' => 1, 'completion_tokens' => 1, 'total_tokens' => 2],
+        ], MetaInformation::from([]));
     }
 
     public function test_parse_maps_articles_and_respects_count(): void

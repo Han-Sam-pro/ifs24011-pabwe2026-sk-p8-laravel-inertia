@@ -23,13 +23,15 @@ class MiddlewareTest extends TestCase
      */
     private function requestWithRoute(array $parameters): Request
     {
+        $request = Request::create('/test', 'GET');
+
         $route = new Route(['GET'], '/test', ['uses' => fn () => null]);
+        $route->bind($request);
 
         foreach ($parameters as $name => $value) {
             $route->setParameter($name, $value);
         }
 
-        $request = Request::create('/test', 'GET');
         $request->setRouteResolver(fn () => $route);
 
         return $request;
