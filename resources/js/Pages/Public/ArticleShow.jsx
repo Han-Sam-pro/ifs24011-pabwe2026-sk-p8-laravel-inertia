@@ -8,7 +8,7 @@ import { CommunityCard } from './Home';
 export default function ArticleShow({ post }) {
     return (
         <PublicLayout>
-            <Head title={post.title} />
+            <Head title={post.title}><meta name="description" content={post.excerpt || post.title} /></Head>
 
             <article className="w-full px-4 py-10 sm:px-8 lg:px-16">
                 <Link href="/articles" className="mb-6 inline-block cursor-pointer text-sm font-semibold text-indigo-700 hover:underline">

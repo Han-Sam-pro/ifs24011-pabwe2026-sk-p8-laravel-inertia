@@ -7,14 +7,15 @@ createInertiaApp({
     // Progress bar dan status pill dibuat sendiri (lihat Components/ProgressIndicators.jsx).
     progress: false,
     resolve: (name) => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-        const page = pages[`./Pages/${name}.jsx`];
+        // Lazy: setiap halaman menjadi chunk sendiri, jadi halaman publik tidak memuat kode admin/editor.
+        const pages = import.meta.glob('./Pages/**/*.jsx');
+        const loader = pages[`./Pages/${name}.jsx`];
 
-        if (!page) {
+        if (!loader) {
             throw new Error(`Halaman "${name}" tidak ditemukan.`);
         }
 
-        return page.default;
+        return loader().then((module) => module.default);
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);

@@ -6,7 +6,7 @@ import PublicLayout from '../../Layouts/PublicLayout';
 export default function Home({ latest }) {
     return (
         <PublicLayout>
-            <Head title="Beranda" />
+            <Head title="Beranda"><meta name="description" content="Beranda Blog Pabwe: artikel terbaru tentang teknologi, pendidikan, gaya hidup, bisnis, dan opini." /></Head>
 
             <section className="bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 px-4 py-20 text-white">
                 <div className="mx-auto max-w-4xl text-center">

@@ -15,7 +15,7 @@ export default function Pagination({ paginator }) {
 
                 if (!link.url) {
                     return (
-                        <span key={index} className={`${base} text-slate-400`}>
+                        <span key={index} className={`${base} text-slate-600`}>
                             {label}
                         </span>
                     );

@@ -15,7 +15,7 @@ export default function Articles({ posts, filters, categories }) {
 
     return (
         <PublicLayout>
-            <Head title="Artikel" />
+            <Head title="Artikel"><meta name="description" content="Daftar artikel Blog Pabwe. Cari dan saring berdasarkan kategori." /></Head>
             <div className="mx-auto max-w-6xl px-4 py-10">
                 <h1 className="text-3xl font-bold text-slate-900">Semua artikel</h1>
 
